@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html >
+  <head runat="server">
+    <title>Nourish.tech</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="js/controllers/submitform.js"></script>
+	<style type="text/css">
+	  html { height: 100% }
+	  body { height: 100%; margin: 0; padding: 0 }
+	  #map_canvas { height: 100% }
+    </style>
+    
+
+    <script type="text/javascript">
+      function initMap() {
+	      var myLatlng = new google.maps.LatLng(40.346745, -74.655129);
+	      var myOptions = {
+		      zoom:15,
+		      center: myLatlng,
+		      mapTypeId: google.maps.MapTypeId.ROADMAP
+	      }
+	      map = new google.maps.Map(document.getElementById("map"), myOptions);
+	      // marker refers to a global variable
+	      marker = new google.maps.Marker({
+		      position: myLatlng,
+		      map: map
+	      });
+	      // if center changed then update lat and lon document objects
+	      google.maps.event.addListener(map, 'center_changed', function () {
+		      var location = map.getCenter();
+		      document.getElementById("lat").value = location.lat();
+		      document.getElementById("lng").value = location.lng();
+		      // call function to reposition marker location
+		      placeMarker(location);
+	      });
+
+	      function placeMarker(location) {
+		      marker.setPosition(location);
+	      }
+      }
+     
+    </script>
+    <style>
+      div#map {
+	      width: 100%;
+	      height: 500px;
+	      border:double;
+      }
+      div#map2 {
+	      width: 100%;
+	      height: 500px;
+	      border:double;
+      }
+    </style>
+    <script>
+      var map2;
+      var infos = [];
+      function initMap2() {
+          // The location of Princeton
+          var princeton = {lat: 40.346745, lng: -74.655129};
+          // The map, centered at Princeton
+          map2 = new google.maps.Map(
+              document.getElementById("map2"), {zoom: 15, center: princeton, styles:[
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ebe3cd"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#523735"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f1e6"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#c9b2a6"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#dcd2be"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#ae9e90"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#93817c"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#a5b076"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#447530"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f1e6"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#fdfcf8"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f8c967"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#e9bc62"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e98d58"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#db8555"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#806b63"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#8f7d77"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#ebe3cd"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9d3c2"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#92998d"
+      }
+    ]
+  }
+]});
+          // The marker, positioned at Princeton
+          var http = new XMLHttpRequest();
+          var url = "/api/Events";
+          http.open('GET', url);
+          http.send();
+
+          http.onreadystatechange=(e)=>{
+              console.log(http.responseText);
+              var res = JSON.parse(http.responseText);
+              //var infowindow = new Array(res.length);
+              setMarkers(map2, res);
+          }
+      }
+      function setMarkers(map2, res) {
+          var marker, i;
+          for (i = 0; i < res.length; i++) {
+              var latlng = {lat: res[i].lat, lng: res[i].lng};
+              var eventTime = new Date(res[i].date).getTime();
+              var currentTime = new Date().getTime();
+              var twoHours = 7200000;
+              console.log("Event" + i + ": " + (currentTime - eventTime));
+              if (currentTime > eventTime + twoHours) continue;
+              var color = 'red';
+              if (currentTime > eventTime - 12*twoHours) color='yellow';
+
+              marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map2,
+                  icon: {
+                      path: google.maps.SymbolPath.CIRCLE,
+                      scale: 10,
+                      fillColor: color,
+                      fillOpacity: 0.7,
+                      strokeWeight: 5,
+                      strokeColor: 'white'
+                  }
+              });
+              var date = res[i].date.replace("T", " at ");
+              var element = document.createElement('div');
+              var html = "<p><b>" + res[i].name + "</b></p><p><i>" + date + " </i> </p><a target='_blank' rel='noopener noreferrer' href=" + res[i].link + ">" + res[i].desc + "</a>";
+              element.innerHTML = html;
+
+              var infowindow = new google.maps.InfoWindow();
+              google.maps.event.addListener(marker,'click',(function(marker,element,infowindow) {
+                  return function() {
+                      closeInfos();
+                      infowindow.setContent(element);
+                      infowindow.open(map2, marker);
+                      infos[0] = infowindow;
+                  };
+              })(marker,element,infowindow));
+          }
+      }
+      function closeInfos() {
+          if (infos.length > 0) {
+              // Detach infowindow from marker **undocumented
+              infos[0].set("marker", null);
+              // close window
+              infos[0].close();
+              // empty array
+              infos.length = 0;
+          }
+      }
+
+      window.onload = function () {
+          initMap();
+          initMap2();
+          document.getElementById("school2").onchange=function() { //if school changes
+              console.log("test");
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map2.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map2.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+          
+          document.getElementById("school").onchange=function() { //if school changes
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+      };
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI2NdfHWgyXYhbZ7rCBaYayjzYklpRpa4">
+    </script>
+  </head>
+  <head>
+    <!-- Site made with Mobirise Website Builder v4.8.7, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v4.8.7, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="assets/images/logo4.png" type="image/x-icon">
+    <meta name="description" content="">
+    <title>Home</title>
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
+    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="assets/theme/css/style.css">
+    <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+    
+    
+    
+  </head>
+  <body>
+    <section class="cid-qTkA127IK8 mbr-fullscreen mbr-parallax-background" id="header2-1">
+
+      
+
+      <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(51, 51, 51);"></div>
+
+      <div class="container align-center">
+        <div class="row justify-content-md-center">
+          <div class="mbr-white col-md-10">
+            <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Nourish</h1>
+            
+            <p class="mbr-text pb-3 mbr-fonts-style display-5">&nbsp;</p>
+            <div class="mbr-section-btn"><a class="btn btn-md btn-secondary display-4" href="index.html#mapform">Add an Event!</a>
+              <a class="btn btn-md btn-black display-4" href="index.html#maplist">Food List</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="mbr-section form1 cid-r940HL9K2S" id="maplist">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="media-container-column col-lg-4">
+            School:
+            <select ng-model="events.school" id="school2" class="form-control-lg" >
+              <option value="princeton">Princeton</option>
+              <option value="uva">University of Virginia</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row justify-content-right">
+          <div class="media-container-column col-lg-12">
+            <div id="map2"></div><!-- List -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="mbr-section form1 cid-r940HL9K2S" id="mapform">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="media-container-column col-lg-8">
+            <!-- MAP HOLDER -->
+            <div id="map"></div>
+            <!-- REFERENCES -->
+
+            <input type='hidden' name='lat' id='lat' value='38.0356' required>
+            <input type='hidden' name='lng' id='lng' value='-78.5034' required>
+          </div>
+          <div class="media-container-column col-lg-4" data-form-type="formoid">    
+            <div class="jumbotron text-center">
+              <h1>Add An Event</h1>
+              <form name="neweventForm" runat="server">
+                <div class="form-group">
+                  <input placeholder="Event Name" class="form-control" type="text" name="name" id="name" ng-model="events.name" />
+                </div>
+                <div class="form-group">
+                  <input placeholder="Date" class="form-control" type="datetime-local" name="date" id="date" value="2018-11-11T20:00"/>
+                </div>    
+                <div class="form-group">
+                  <input placeholder="Description" class="form-control" type="text" name="desc" id="desc" ng-model="events.desc" />
+                </div>
+                <div class="form-group">
+                  <select placeholder="Event Type" class="form-control" ng-model="events.type" id="type">
+                    <option value="meal">Meal</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" placeholder="School" ng-model="events.school" id="school">
+                    <option value="princeton">Princeton University</option>
+                    <option value="uva">University of Virginia</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Link" type="link" name="link" id="link" ng-model="events.link" />
+                </div>
+                <div class="form-group">
+                  <button class="btn brn-default btn-lg" type="submit" onclick="submitform()">Create New Event</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <script src="assets/web/assets/jquery/jquery.min.js"></script>
+    <script src="assets/popper/popper.min.js"></script>
+    <script src="assets/tether/tether.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/smoothscroll/smooth-scroll.js"></script>
+    <script src="assets/parallax/jarallax.min.js"></script>
+    <script src="assets/theme/js/script.js"></script>
+    
+    
+  </body>
+</html>

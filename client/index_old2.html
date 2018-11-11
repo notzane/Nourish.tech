@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html >
+  <head runat="server">
+    <title>LiberFood</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/angular-resource/angular-resource.js"></script>
+    <script src="vendor/lodash/lodash.js"></script>
+
+    <script src="js/controllers/get_request.js"></script>
+    <script src="js/controllers/submitform.js"></script>
+	<style type="text/css">
+	  html { height: 100% }
+	  body { height: 100%; margin: 0; padding: 0 }
+	  #map_canvas { height: 100% }
+    </style>
+    
+
+    <script type="text/javascript">
+      function initialize() {
+	      var myLatlng = new google.maps.LatLng(38.0356,-78.5034);
+	      var myOptions = {
+		      zoom:15,
+		      center: myLatlng,
+		      mapTypeId: google.maps.MapTypeId.ROADMAP
+	      }
+	      map = new google.maps.Map(document.getElementById("gmap"), myOptions);
+	      // marker refers to a global variable
+	      marker = new google.maps.Marker({
+		      position: myLatlng,
+		      map: map
+	      });
+	      // if center changed then update lat and lon document objects
+	      google.maps.event.addListener(map, 'center_changed', function () {
+		      var location = map.getCenter();
+		      document.getElementById("lat").value = location.lat();
+		      document.getElementById("lng").value = location.lng();
+		      // call function to reposition marker location
+		      placeMarker(location);
+	      });
+
+	      function placeMarker(location) {
+		      marker.setPosition(location);
+	      }
+      }
+      window.onload = function () {
+          initialize();
+          document.getElementById("school").onchange=function() { //if school changes
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+      };
+    </script>
+    <style>
+      div#gmap {
+	      width: 100%;
+	      height: 500px;
+	      border:double;
+      }
+    </style>
+    <script>
+      var map2;
+      var infos = [];
+      function initMap() {
+          // The location of Princeton
+          var princeton = {lat: 40.346745, lng: -74.655129};
+          // The map, centered at Princeton
+          map = new google.maps.Map(
+              document.getElementById('map'), {zoom: 15, center: princeton});
+          // The marker, positioned at Princeton
+          var http = new XMLHttpRequest();
+          var url = "/api/Events";
+          http.open('GET', url);
+          http.send();
+
+          http.onreadystatechange=(e)=>{
+              console.log(http.responseText);
+              var res = JSON.parse(http.responseText);
+              //var infowindow = new Array(res.length);
+              setMarkers(map2, res);
+          }
+      }
+      function setMarkers(map2, res) {
+          var marker, i;
+          for (i = 0; i < res.length; i++) {
+              var latlng = {lat: res[i].lat, lng: res[i].lng};
+              marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map2,
+                  icon: {
+                      path: google.maps.SymbolPath.CIRCLE,
+                      scale: 10,
+                      fillColor: 'red',
+                      fillOpacity: 0.7,
+                      strokeWeight: 5,
+                      strokeColor: 'white'
+                  }
+              });
+              
+              var element = document.createElement('div');
+              var node = document.createTextNode(res[i].desc);
+              element.appendChild(node);
+
+              var infowindow = new google.maps.InfoWindow();
+              google.maps.event.addListener(marker,'click',(function(marker,element,infowindow) {
+                  return function() {
+                      closeInfos();
+                      infowindow.setContent(element);
+                      infowindow.open(map2, marker);
+                      infos[0] = infowindow;
+                  };
+              })(marker,element,infowindow));
+          }
+      }
+      function closeInfos() {
+          if (infos.length > 0) {
+              // Detach infowindow from marker **undocumented
+              infos[0].set("marker", null);
+              // close window
+              infos[0].close();
+              // empty array
+              infos.length = 0;
+          }
+      }
+
+      window.onload = function () {
+          initMap();
+          document.getElementById("school").onchange=function() { //if school changes
+              console.log("test");
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map2.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map2.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+      };
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI2NdfHWgyXYhbZ7rCBaYayjzYklpRpa4">
+    </script>
+  </head>
+  <head>
+    <!-- Site made with Mobirise Website Builder v4.8.7, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v4.8.7, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="assets/images/logo4.png" type="image/x-icon">
+    <meta name="description" content="">
+    <title>Home</title>
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
+    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="assets/theme/css/style.css">
+    <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+    
+    
+    
+  </head>
+  <body>
+    <section class="cid-qTkA127IK8 mbr-fullscreen mbr-parallax-background" id="header2-1">
+
+      
+
+      <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(51, 51, 51);"></div>
+
+      <div class="container align-center">
+        <div class="row justify-content-md-center">
+          <div class="mbr-white col-md-10">
+            <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">Nourish</h1>
+            
+            <p class="mbr-text pb-3 mbr-fonts-style display-5">&nbsp;</p>
+            <div class="mbr-section-btn"><a class="btn btn-md btn-secondary display-4" href="index.html#form1-8">Add an Event!</a>
+              <a class="btn btn-md btn-black display-4" href="index.html#form1-8">Food List</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="mbr-arrow hidden-sm-down" aria-hidden="true">
+        <a href="#next">
+          <i class="mbri-down mbr-iconfont"></i>
+        </a>
+      </div>
+    </section>
+    <section class="">
+      <div class="container">
+        <div class="row justify-content-right">
+          <div class="media-container-column col-lg-12">
+            School:
+            <select ng-model="events.school" id="school">
+              <option value="princeton">Princeton</option>
+              <option value="uva">University of Virginia</option>
+            </select>
+            <br>
+            <div id="map"></div><!-- List -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="engine"><a href="https://mobirise.info/h">create a web page for free</a></section><section class="mbr-section form1 cid-r940HL9K2S" id="form1-8">
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="media-container-column col-lg-8">
+            <!-- MAP HOLDER -->
+            <div id="gmap"></div>
+            <!-- REFERENCES -->
+
+            <input type='hidden' name='lat' id='lat' value='38.0356' required>
+            <input type='hidden' name='lng' id='lng' value='-78.5034' required>
+          </div>
+          <div class="media-container-column col-lg-4" data-form-type="formoid">    
+            <div class="jumbotron text-center">
+              <h1>Add An Event</h1>
+              <form name="neweventForm" runat="server">
+                <div class="form-group">
+                  <input placeholder="Event Name" class="form-control" type="text" name="name" id="name" ng-model="events.name" />
+                </div>
+                <div class="form-group">
+                  <input placeholder="Date" class="form-control" type="datetime-local"/>
+                </div>    
+                <div class="form-group">
+                  <input placeholder="Description" class="form-control" type="text" name="desc" id="desc" ng-model="events.desc" />
+                </div>
+                <div class="form-group">
+                  <select placeholder="Event Type" class="form-control" ng-model="events.type" id="type">
+                    <option value="meal">Meal</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" placeholder="School" ng-model="events.school" id="school">
+                    <option value="princeton">Princeton University</option>
+                    <option value="uva">University of Virginia</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Link" type="link" name="link" id="link" ng-model="events.link" />
+                  <button class="btn brn-default btn-lg" type="submit" onclick="submitform()">Create New Event</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <script src="assets/web/assets/jquery/jquery.min.js"></script>
+    <script src="assets/popper/popper.min.js"></script>
+    <script src="assets/tether/tether.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/smoothscroll/smooth-scroll.js"></script>
+    <script src="assets/parallax/jarallax.min.js"></script>
+    <script src="assets/theme/js/script.js"></script>
+    
+    
+  </body>
+</html>

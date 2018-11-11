@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head runat="server">
+    <title>LiberFood</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/angular-resource/angular-resource.js"></script>
+    <script src="vendor/lodash/lodash.js"></script>
+
+    <script src="js/controllers/get_request.js"></script>
+    <script src="js/controllers/submitform.js"></script>
+	<style type="text/css">
+	  html { height: 100% }
+	  body { height: 100%; margin: 0; padding: 0 }
+	  #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI2NdfHWgyXYhbZ7rCBaYayjzYklpRpa4">
+    </script>
+
+    <script type="text/javascript">
+      function initialize() {
+	      var myLatlng = new google.maps.LatLng(38.0356,-78.5034);
+	      var myOptions = {
+		      zoom:15,
+		      center: myLatlng,
+		      mapTypeId: google.maps.MapTypeId.ROADMAP
+	      }
+	      map = new google.maps.Map(document.getElementById("gmap"), myOptions);
+	      // marker refers to a global variable
+	      marker = new google.maps.Marker({
+		      position: myLatlng,
+		      map: map
+	      });
+	      // if center changed then update lat and lon document objects
+	      google.maps.event.addListener(map, 'center_changed', function () {
+		      var location = map.getCenter();
+		      document.getElementById("lat").value = location.lat();
+		      document.getElementById("lng").value = location.lng();
+		      // call function to reposition marker location
+		      placeMarker(location);
+	      });
+
+	      function placeMarker(location) {
+		      marker.setPosition(location);
+	      }
+      }
+      window.onload = function () {
+          initialize();
+          document.getElementById("school").onchange=function() { //if school changes
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+      };
+    </script>
+    <style>
+      div#gmap {
+	      width: 50%;
+	      height: 500px;
+	      border:double;
+      }
+    </style>
+  </head>
+  <style>
+    .jumbotron {
+        background-color: #000; /* Orange */
+        color: #fff;
+        padding: 100px 25px;
+    }
+    .bg-grey {
+        background-color: #f6f6f6;
+    }
+    .container-fluid {
+        padding: 60px 50px;
+    }
+  </style>
+  <body>
+    <div class = "jumbotron text-center">
+      <h1>LiberFood</h1> 
+    </div>
+    <h2>Reviews of Liberfood</h2>
+    <div id="myCarousel" class="carousel slide text-center" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner" role="listbox">
+        <div class="item active">
+          <h4>I love free food!!<br><span style="font-style:normal;">Eisgruber, President of Princeton</span></h4>
+        </div>
+        <div class="item">
+          <h4>"Incredible design!<br><span style="font-style:normal;">Jim Ryan, Virginia guy</span></h4>
+        </div>
+      </div>
+      
+      <!-- Left and right controls -->
+      <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr.only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <div class="jumbotron">
+      <form name="neweventForm" runat="server">
+        <div class="form-group">
+          <label for="Event Name">Event Name:</label>
+          <input type="text" name="name" id="name" ng-model="events.name" />
+          <br>
+        </div>
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input placeholder="mm/dd/yyyy" type="date" name="date" id="date" ng-model="events.date" />
+          <br>
+        </div>
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <input type="text" name="desc" id="desc" ng-model="events.desc" />
+          <br>
+        </div>
+        <div class="form-group">
+          <label for="events.type">Type:</label>
+          <select ng-model="events.type" id="type">
+            <option value="meal">Meal</option>
+            <option value="snack">Snack</option>
+          </select>
+          <br>
+        </div>
+        <div class="form-group">
+          <label for="school">School:</label>
+          <select ng-model="events.school" id="school">
+            <option value="princeton">Princeton</option>
+            <option value="uva">University of Virginia</option>
+          </select>
+          <br>
+        </div>
+        <div class="form-group">
+          <label for="link">Link:</label>
+          <input type="link" name="link" id="link" ng-model="events.link" />
+          <br>
+          <button class="btn brn-default btn-lg" type="submit" onclick="submitform()">Create New Event</button>
+          <br>
+        </div>
+      </form>
+    </div>
+    <div class = "container-fluid">
+      <h2>Events Near You</h2>
+      <h1>Lorem ipsum..</h1>
+      <p>Lorem ipsum..</p>
+      <button class = "btn btn-default btn-lg">Get in Touch</button>
+    </div>
+    <!-- MAP HOLDER -->
+	<div id="gmap"></div>
+	<!-- REFERENCES -->
+
+	<input type='hidden' name='lat' id='lat' value='38.0356' required>
+	<input type='hidden' name='lng' id='lng' value='-78.5034' required>
+  </body>
+</html>

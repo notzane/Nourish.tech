@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FreeFood</title>
+    <style>
+      /* Set the size of the div element that contains the map */
+      #map {
+          height: 400px;  /* The height is 400 pixels */
+          width: 400px;  /* The width is the width of the web page */
+      }
+    </style>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI2NdfHWgyXYhbZ7rCBaYayjzYklpRpa4">
+    </script>
+    <script>
+           var map;
+            var infos = [];
+            function initMap() {
+                // The location of Princeton
+                var princeton = {lat: 40.346745, lng: -74.655129};
+                // The map, centered at Princeton
+                map = new google.maps.Map(
+                document.getElementById('map'), {zoom: 15, center: princeton});
+                // The marker, positioned at Princeton
+                var http = new XMLHttpRequest();
+                var url = "/api/Events";
+                http.open('GET', url);
+                http.send();
+
+                http.onreadystatechange=(e)=>{
+                    console.log(http.responseText);
+                    var res = JSON.parse(http.responseText);
+                    //var infowindow = new Array(res.length);
+                    setMarkers(map, res);
+                }
+            }
+            function setMarkers(map, res) {
+                var marker, i;
+                for (i = 0; i < res.length; i++) {
+                    var latlng = {lat: res[i].lat, lng: res[i].lng};
+                    marker = new google.maps.Marker({
+                        position: latlng,
+                        map: map,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 10,
+                            fillColor: 'red',
+                            fillOpacity: 0.7,
+                            strokeWeight: 5,
+                            strokeColor: 'white'
+                        }
+                    });
+                    
+                    var element = document.createElement('div');
+                    var node = document.createTextNode(res[i].desc);
+                    element.appendChild(node);
+
+                    var infowindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(marker,'click',(function(marker,element,infowindow) {
+                        return function() {
+                            closeInfos();
+                            infowindow.setContent(element);
+                            infowindow.open(map, marker);
+                            infos[0] = infowindow;
+                        };
+                    })(marker,element,infowindow));
+                }
+            }
+            function closeInfos() {
+                if (infos.length > 0) {
+                    // Detach infowindow from marker **undocumented
+                    infos[0].set("marker", null);
+                    // close window
+                    infos[0].close();
+                    // empty array
+                    infos.length = 0;
+                }
+            }
+      // var map;
+      // function initMap() {
+      //     // The location of Princeton
+      //     var princeton = {lat: 40.346745, lng: -74.655129};
+      //     // The map, centered at Princeton
+      //     map = new google.maps.Map(
+      //         document.getElementById('map'), {zoom: 15, center: princeton});
+      //     // The marker, positioned at Princeton
+      //     var http = new XMLHttpRequest();
+      //     var url = "/api/Events";
+      //     http.open('GET', url);
+      //     http.send();
+
+      //     http.onreadystatechange=(e)=>{
+      //         console.log(http.responseText);
+      //         var res = JSON.parse(http.responseText);
+      //         var latlng = {lat: res[0].lat, lng: res[0].lng};
+      //         var marker = new google.maps.Marker({position: latlng, map: map});
+      //     }
+      // }
+      window.onload = function () {
+          initMap();
+          document.getElementById("school").onchange=function() { //if school changes
+              console.log("test");
+              var school = this.value;
+              if(school=="uva"){
+                  //center on uva
+                  map.setCenter(new google.maps.LatLng(38.0356,-78.5034));
+              }
+              if(school=="princeton"){
+                  //center on princeton
+                  map.setCenter(new google.maps.LatLng(40.346745, -74.65512));
+              }
+          }
+      };
+    </script>
+
+  </head>
+  <body>
+    <h1>Free Food!</h1>
+    <p id="events"></p>
+    School:
+    <select ng-model="events.school" id="school">
+      <option value="princeton">Princeton</option>
+      <option value="uva">University of Virginia</option>
+    </select>
+    <br>
+    <div id="map"></div>
+
+  </body>
+</html>

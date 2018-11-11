@@ -1,0 +1,12 @@
+{
+  "dataserver": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "",
+    "database": "",
+    "password": "",
+    "name": "dataserver",
+    "user": "",
+    "connector": "mongodb"
+  }
+}

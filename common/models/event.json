@@ -1,0 +1,45 @@
+{
+    "name": "event",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "date": {
+            "type": "string",
+            "required": true
+        },
+        "desc": {
+            "type": "string",
+            "required": true
+        },
+        "type": {
+            "type": "string",
+            "required": true
+        },
+        "school": {
+            "type": "string",
+            "required": true
+        },
+        "lat": {
+            "type": "number",
+            "required": true
+        },
+        "lng": {
+            "type": "number",
+            "required": true
+        },
+        "link": {
+            "type": "string"
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": {}
+}
