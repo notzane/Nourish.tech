@@ -1,5 +1,5 @@
 # Nourish.tech
-Free food finder on college campuses
+Free food finder on college campuses using MongoDB, Google Maps API, and JavaScript
 
 https://devpost.com/software/nourish-tech
 
